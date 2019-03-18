@@ -21,7 +21,7 @@ S&P 500
 Oil
 
 To start off, the data is split into training and test data, with an OLS regression run on the training data.
-
+```
 > # Load data
 > setwd("directory")
 > mydata<-read.csv("mydata.csv")
@@ -53,20 +53,20 @@ Signif. codes:
 Residual standard error: 60.09 on 398 degrees of freedom
 Multiple R-squared:  0.3498,Adjusted R-squared:  0.3482 
 F-statistic: 214.2 on 1 and 398 DF,  p-value: < 2.2e-16
-
+```
 The regression results are generated as above. However, given that the series in question is a time series, serial correlation must be accounted for.
 Serial Correlation
 
 Serial correlation (also known as autocorrelation) is a violation of the Ordinary Least Squares assumption that all observations of the error term in a dataset are uncorrelated. In a model with serial correlation, the current value of the error term is a function of the one immediately previous to it:
-
+```
 et = ρe(t-1) + ut
-   
-where e = error term of equation in question; ρ = first-order autocorrelation coefficient; u = classical (not serially correlated error term)
 
+where e = error term of equation in question; ρ = first-order autocorrelation coefficient; u = classical (not serially correlated error term)
+```
 This issue is quite endemic in time-series models, given that time series data is hardly ever random and often shows particular patterns and relationships between past and future data.
 
 In this regard, a Durbin-Watson test is applied to test for this condition, while the Cochrane-Orcutt procedure is used to remedy this condition.
-
+```
 > # Durbin-Watson Test - Regression 1
 > library(lmtest)
 > library(tseries)
@@ -78,10 +78,11 @@ Durbin-Watson test
 data:  reg1
 DW = 0.072943, p-value < 2.2e-16
 alternative hypothesis: true autocorrelation is greater than 0
-
+```
 With a p-value of lower than 0.05, the null hypothesis of no serial correlation is rejected and serial correlation is indicated to be present in the model.
 
 In terms of remedial measures, the Cochrane-Orcutt remedy only works when the data is an AR(1) stationary process. In other words, taking a first difference of the data results in a stationary process whereby the data has a constant mean, variance and autocorrelation.
+
 Consequences of Serial Correlation
 
 According to Studenmund (2010) – a textbook which I find gives a solid introduction to the particulars of serial correlation – the consequences of this condition for a regression model is as follows:
@@ -99,12 +100,12 @@ When we refer to a time series as stationary, we mean to say that its mean, vari
 This task becomes much more difficult when mean, variance and autocorrelation parameters do not follow a consistent pattern over time, resulting in an unreliable time series model.
 
 Additionally, this problem is compounded by the fact that time series datasets, by their very nature experience non-stationarity as the presence of factors such as seasonal trends skew the mean and variance. In order to test for stationarity, we use the Dickey-Fuller test. This test works by testing for a unit root in the data where:
-
+```
 Δy(t) = δy(t-1) + u(t)
 where Δy(t) is the first difference of y and δ=0 represents our unit root
-
+```
 Our null and alternative hypotheses are as follows:
-
+```
 H0 (Null Hypothesis)
 
 θ = 0 (data is non-stationary and must be differenced to make the data stationary)
@@ -112,9 +113,11 @@ H0 (Null Hypothesis)
 HA (Alternative Hypothesis)
 
 θ < 0 (data is stationary)
+```
 
+A Dickey-Fuller test is run with **aTSA**.
+```
 > library(aTSA)
-
 
 > adf.test(train$gspc)
 Augmented Dickey-Fuller Test 
@@ -250,21 +253,21 @@ Type 3: with drift and trend
 [6,]   5  -8.3    0.01
 ---- 
 Note: in fact, p.value = 0.01 means p.value <= 0.01
-
+```
 In this instance, we see that the p-value is above 0.05 (non-stationary) before first-differencing, while the first-differenced series shows a p-value below 0.05 (stationary). Thus, the presence of a stationary AR(1) series has been confirmed.
 Cochrane-Orcutt Remedy
 
 Given that the presence of a stationary AR(1) series has been established, the Cochrane-Orcutt method is appropriate to use in this case to remedy serial correlation.
 
 The method works by estimating a ρ value, that is, a correlation value between the residuals and its lagged values, where:
-
+```
 yt = yt − p̂yt-1
 xt = xt − p̂xt-1
-
+```
 The Cochrane-Orcutt estimator in R estimates the appropriate value of p̂ to use in estimating the new regression. The purpose of p̂ is to formulate a regression where the correlations between one error term and the previous are removed so that each observation becomes IID (independent and identically distributed).
 
 In this instance, the Cochrane-Orcutt remedy is applied, and the p-value of the Durbin-Watson statistic rises to 0.7621, indicating that the serial correlation has been eliminated.
-
+```
 > reg1residuals=reg1$residuals
 > plot(reg1residuals,type='l')
 
@@ -299,13 +302,13 @@ Durbin-Watson test
 data:  orcuttreg1
 DW = 2.0712, p-value = 0.7621
 alternative hypothesis: true autocorrelation is greater than 0
-
+```
 Cointegration Testing: Two-Step Engle Granger Method
 
 On the issue of cointegration, this is present when a linear combination of the non-stationary data transforms the same into a stationary series. This means that the time series show correlation that is statistically significant and not simply due to chance.
 However, note that simply using a test such as the adf.test to test the residuals of a linear regression is not appropriate on this case. The reason for this is that the critical values will differ for the adf test since residual based critical values are not the same as that for a standard ADF.
 Instead, the coint.test function in R (included with the aTSA library) is used to screen for cointegration.
-
+```
 > coint.test(train$gspc,train$oil)
 Response: train$gspc 
 Input: train$oil 
@@ -353,7 +356,7 @@ Type 1: no trend
 ----------- 
 Note: p.value = 0.01 means p.value <= 0.01 
     : p.value = 0.10 means p.value >= 0.10
-
+```
 In this case, we see that the p-value is above 0.10 on the data, but stands at 0.01 on the first-differenced data for the Type 1: no trend reading.
 
 Taking this result into account, it is possible that cointegration is present to a certain degree in the model.
@@ -362,7 +365,7 @@ Granger Causality and Cross-Correlation Testing
 One must also consider the possibility that any “effects” of the oil price on movements of the S&P 500 may not be instantaneous, and a time lag for the same may be present.
 
 To analyse this further, a cross-correlation plot is generated and a Granger causality test is run.
-
+```
 # Cross-Correlation
 ccf1<-ccf(train$gspc,train$oil,lag.max=500,main = "Cross-Correlation")
 ccf1
@@ -392,9 +395,9 @@ Model 2: train$gspc ~ Lags(train$gspc, 1:120)
 ---
 Signif. codes:  
 0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-
+```
 When attempting to model with Granger Causality, 119 specified lags resulted in a significant p-value at the 5% level. In this regard, a further regression was modelled using this lag order:
-
+```
 > # Regression 2
 > reg2<-lm(gspc[121:400]~oil[1:280],data=train)
 > summary(reg2)
@@ -417,9 +420,9 @@ Signif. codes:
 Residual standard error: 71.81 on 278 degrees of freedom
 Multiple R-squared:  0.08873,Adjusted R-squared:  0.08545 
 F-statistic: 27.07 on 1 and 278 DF,  p-value: 3.819e-07
-
+```
 Again, this regression is tested for serial correlation and corrected using the Cochrane-Orcutt remedy:
-
+```
 > dwtest(reg2)
 
 Durbin-Watson test
@@ -445,12 +448,12 @@ Durbin-Watson statistic
  coefficients: 
 (Intercept)  oil[1:280] 
 2094.454940   -0.758537
-
+```
 Once again, the Durbin-Watson p-value was originally below 0.05, but rose to 0.8657 when corrected with the Cochrane-Orcutt remedy.
 Model Validation
 
 With the constructed regression models, the predictions are now compared against the test data to determine the accuracy of those yielded predictions.
-
+```
 > # Predictions
 > test1<-mydata[401:500,]
 > predict1=1780.0014 + (5.7817*test1$oil) #reg1
@@ -478,9 +481,9 @@ With the constructed regression models, the predictions are now compared against
 > percentage_error1=data.frame(abs(error1))
 > accuracy1=data.frame(percentage_error1[percentage_error1$abs.error1. < 0.05,])
 > hist(percentage_error1$abs.error1.,main="Histogram: Prediction 1",xlab="Error")
+```
 
-
-
+```
 > error2
   [1] 0.06150638 0.06150638 0.05988886 0.06089057 0.06219623 0.06692979
   [7] 0.07239259 0.07239259 0.07239259 0.07301745 0.06676144 0.06859207
@@ -494,9 +497,9 @@ With the constructed regression models, the predictions are now compared against
 > percentage_error2=data.frame(abs(error2))
 > accuracy2=data.frame(percentage_error2[percentage_error2$abs.error2. < 0.05,])
 > hist(percentage_error2$abs.error2.,main="Histogram: Prediction 2",xlab="Error")
+```
 
-
-
+```
 > error3
   [1] 0.06082714 0.06082714 0.05763249 0.05797388 0.05462288 0.05631683
   [7] 0.05804001 0.05760459 0.05760459 0.05626166 0.04905807 0.05212281
@@ -510,9 +513,9 @@ With the constructed regression models, the predictions are now compared against
 > percentage_error3=data.frame(abs(error3))
 > accuracy3=data.frame(percentage_error3[percentage_error3$abs.error3. < 0.05,])
 > hist(percentage_error3$abs.error3.,main="Histogram: Prediction 3",xlab="Error")
+```
 
-
-
+```
 > error4
   [1] 0.05308870 0.05308870 0.04991735 0.05025625 0.04838915 0.05007308
   [7] 0.05178608 0.05165870 0.05165870 0.05032332 0.04349987 0.04670484
@@ -526,7 +529,7 @@ With the constructed regression models, the predictions are now compared against
 > percentage_error4=data.frame(abs(error4))
 > accuracy4=data.frame(percentage_error4[percentage_error4$abs.error4. < 0.05,])
 > hist(percentage_error4$abs.error4.,main="Histogram: Prediction 4",xlab="Error")
-
+```
 
 
 The model with the lowest mean percentage error was Regression 2: the regression without any time lags and corrected for serial correlation by the Cochrane-Orcutt remedy.
