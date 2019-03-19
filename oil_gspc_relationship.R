@@ -1,5 +1,5 @@
 # Load data
-setwd("/media/veracrypt9/a_documents/group b/computing/data science/datasets")
+setwd("directory")
 mydata<-read.csv("oilgspc.csv")
 attach(mydata)
 train<-mydata[1:400,]
