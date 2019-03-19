@@ -471,7 +471,8 @@ Durbin-Watson statistic
 2094.454940   -0.758537
 ```
 Once again, the Durbin-Watson p-value was originally below 0.05, but rose to 0.8657 when corrected with the Cochrane-Orcutt remedy.
-Model Validation
+
+## Model Validation
 
 With the constructed regression models, the predictions are now compared against the test data to determine the accuracy of those yielded predictions.
 ```
@@ -503,6 +504,7 @@ With the constructed regression models, the predictions are now compared against
 > accuracy1=data.frame(percentage_error1[percentage_error1$abs.error1. < 0.05,])
 > hist(percentage_error1$abs.error1.,main="Histogram: Prediction 1",xlab="Error")
 ```
+![histogram-prediction-1](histogram-prediction-1.png)
 
 ```
 > error2
@@ -519,6 +521,7 @@ With the constructed regression models, the predictions are now compared against
 > accuracy2=data.frame(percentage_error2[percentage_error2$abs.error2. < 0.05,])
 > hist(percentage_error2$abs.error2.,main="Histogram: Prediction 2",xlab="Error")
 ```
+![histogram-prediction-2](histogram-prediction-2.png)
 
 ```
 > error3
@@ -535,6 +538,7 @@ With the constructed regression models, the predictions are now compared against
 > accuracy3=data.frame(percentage_error3[percentage_error3$abs.error3. < 0.05,])
 > hist(percentage_error3$abs.error3.,main="Histogram: Prediction 3",xlab="Error")
 ```
+![histogram-prediction-3](histogram-prediction-3.png)
 
 ```
 > error4
@@ -551,7 +555,7 @@ With the constructed regression models, the predictions are now compared against
 > accuracy4=data.frame(percentage_error4[percentage_error4$abs.error4. < 0.05,])
 > hist(percentage_error4$abs.error4.,main="Histogram: Prediction 4",xlab="Error")
 ```
-
+![histogram-prediction-4](histogram-prediction-4.png)
 
 The model with the lowest mean percentage error was Regression 2: the regression without any time lags and corrected for serial correlation by the Cochrane-Orcutt remedy.
 
