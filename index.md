@@ -20,11 +20,17 @@ Data
 
 Here is a sample of the dataset (actual timeline is from 19th June 2015 to 31st October 2016):
 
+![dates-1](dates-1.png)
+
 Here are the plots of the S&P 500 (^GSPC) and oil prices:
 
 S&P 500
 
+![gspc](gspc.png)
+
 Oil
+
+![oil](oil.png)
 
 To start off, the data is split into training and test data, with an OLS regression run on the training data.
 ```
@@ -273,12 +279,15 @@ xt = xt − p̂xt-1
 The Cochrane-Orcutt estimator in R estimates the appropriate value of p̂ to use in estimating the new regression. The purpose of p̂ is to formulate a regression where the correlations between one error term and the previous are removed so that each observation becomes IID (independent and identically distributed).
 
 In this instance, the Cochrane-Orcutt remedy is applied, and the p-value of the Durbin-Watson statistic rises to 0.7621, indicating that the serial correlation has been eliminated.
+
 ```
 > reg1residuals=reg1$residuals
 > plot(reg1residuals,type='l')
+```
 
-residuals
+![residuals](residuals.png)
 
+```
 > title("Residuals")
 > orcuttreg1<-cochrane.orcutt(reg1)
 > summary(orcuttreg1)
@@ -366,18 +375,24 @@ Note: p.value = 0.01 means p.value <= 0.01
 In this case, we see that the p-value is above 0.10 on the data, but stands at 0.01 on the first-differenced data for the Type 1: no trend reading.
 
 Taking this result into account, it is possible that cointegration is present to a certain degree in the model.
+
 Granger Causality and Cross-Correlation Testing
 
 One must also consider the possibility that any “effects” of the oil price on movements of the S&P 500 may not be instantaneous, and a time lag for the same may be present.
 
 To analyse this further, a cross-correlation plot is generated and a Granger causality test is run.
+
 ```
 # Cross-Correlation
 ccf1<-ccf(train$gspc,train$oil,lag.max=500,main = "Cross-Correlation")
 ccf1
+```
+
+![cross-correlation](cross-correlation.png)
 
 From the cross-correlation diagram, we see that significant correlations are still present across different time periods:
 
+```
 > # Granger Test
 > grangertest(train$gspc ~ train$oil, order=119)
 Granger causality test
