@@ -558,17 +558,17 @@ With the constructed regression models, the predictions are now compared against
 
 The model with the lowest mean percentage error was Regression 2: the regression without any time lags and corrected for serial correlation by the Cochrane-Orcutt remedy.
 
-    Mean Percentage Error of Regression 1: 5.36%
-    Mean Percentage Error of Regression 2: 4.61%
-    Mean Percentage Error of Regression 3: 6.29%
-    Mean Percentage Error of Regression 4: 4.88%
+- Mean Percentage Error of Regression 1: 5.36%
+- Mean Percentage Error of Regression 2: 4.61%
+- Mean Percentage Error of Regression 3: 6.29%
+- Mean Percentage Error of Regression 4: 4.88%
 
 Moreover, of the four regression models, here are the percentage of predictions that came within 5% of the actual value:
 
-    Regression 1: 44%
-    Regression 2: 61%
-    Regression 3: 9%
-    Regression 4: 44%
+- Regression 1: 44%
+- Regression 2: 61%
+- Regression 3: 9%
+- Regression 4: 44%
 
 ## Conclusion
 
