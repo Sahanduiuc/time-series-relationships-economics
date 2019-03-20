@@ -12,11 +12,11 @@ However, since this OLS regression is incorporating time series data, potential 
 
 In particular, this analysis will take into account the following considerations when constructing the OLS regression model:
 
-    Use of the Durbin-Watson test to screen for serial correlation
-    Remedial measures to remove serial correlation (if present) with the Cochrane-Orcutt remedy
-    Stationarity and Cointegration tests
-    Cross-Correlation analysis between oil price trends and the S&P 500
-    Accuracy of predictions against the test data
+- Use of the Durbin-Watson test to screen for serial correlation
+- Remedial measures to remove serial correlation (if present) with the Cochrane-Orcutt remedy
+- Stationarity and Cointegration tests
+- Cross-Correlation analysis between oil price trends and the S&P 500
+- Accuracy of predictions against the test data
 
 ## Data
 
@@ -120,15 +120,9 @@ Additionally, this problem is compounded by the fact that time series datasets, 
 where Δy(t) is the first difference of y and δ=0 represents our unit root
 ```
 Our null and alternative hypotheses are as follows:
-```
-H0 (Null Hypothesis)
 
-θ = 0 (data is non-stationary and must be differenced to make the data stationary)
-
-HA (Alternative Hypothesis)
-
-θ < 0 (data is stationary)
-```
+- **H0 (Null Hypothesis):** θ = 0 (data is non-stationary and must be differenced to make the data stationary)
+- **HA (Alternative Hypothesis):** θ < 0 (data is stationary)
 
 A Dickey-Fuller test is run with **aTSA**.
 
