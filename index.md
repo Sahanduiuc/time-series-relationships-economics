@@ -4,6 +4,8 @@
 [Terms and Conditions](https://mgcodesandstats.github.io/terms/) |
 [E-mail me](mailto:michael@michaeljgrogan.com)
 
+# Modelling time series relationships between the S&P 500 and oil prices
+
 In this example, an OLS regression model is constructed in an attempt to forecast future S&P 500 levels based on the price of Brent crude oil.
 
 However, since this OLS regression is incorporating time series data, potential violations such as serial correlation must be legislated for in this instance.
@@ -16,7 +18,7 @@ In particular, this analysis will take into account the following considerations
     Cross-Correlation analysis between oil price trends and the S&P 500
     Accuracy of predictions against the test data
 
-Data
+## Data
 
 Here is a sample of the dataset (actual timeline is from 19th June 2015 to 31st October 2016):
 
@@ -24,11 +26,11 @@ Here is a sample of the dataset (actual timeline is from 19th June 2015 to 31st 
 
 Here are the plots of the S&P 500 (^GSPC) and oil prices:
 
-S&P 500
+**S&P 500**
 
 ![gspc](gspc.png)
 
-Oil
+**Oil**
 
 ![oil](oil.png)
 
@@ -67,7 +69,8 @@ Multiple R-squared:  0.3498,Adjusted R-squared:  0.3482
 F-statistic: 214.2 on 1 and 398 DF,  p-value: < 2.2e-16
 ```
 The regression results are generated as above. However, given that the series in question is a time series, serial correlation must be accounted for.
-Serial Correlation
+
+## Serial Correlation
 
 Serial correlation (also known as autocorrelation) is a violation of the Ordinary Least Squares assumption that all observations of the error term in a dataset are uncorrelated. In a model with serial correlation, the current value of the error term is a function of the one immediately previous to it:
 ```
@@ -95,15 +98,15 @@ With a p-value of lower than 0.05, the null hypothesis of no serial correlation 
 
 In terms of remedial measures, the Cochrane-Orcutt remedy only works when the data is an AR(1) stationary process. In other words, taking a first difference of the data results in a stationary process whereby the data has a constant mean, variance and autocorrelation.
 
-Consequences of Serial Correlation
+### Consequences of Serial Correlation
 
 According to Studenmund (2010) – a textbook which I find gives a solid introduction to the particulars of serial correlation – the consequences of this condition for a regression model is as follows:
 
-    Ordinary Least Squares is no longer the minimum variance estimator among all linear unbiased estimators.
-    Standard errors encounter significant bias in the face of serial correlation, increasing the risk of making a Type 1 or Type 2 error.
-    Our coefficient estimates remain unbiased in the face of serial correlation.
+- Ordinary Least Squares is no longer the minimum variance estimator among all linear unbiased estimators.
+- Standard errors encounter significant bias in the face of serial correlation, increasing the risk of making a Type 1 or Type 2 error.
+- Our coefficient estimates remain unbiased in the face of serial correlation.
 
-Stationarity and Cointegration
+### Stationarity and Cointegration
 
 In seeking to test for stationarity, we primarily wish to determine if our series is trend stationary or whether a unit root is present. Trend stationary is where a process is fully stationary once the trend component of the time series is removed. This is not the case in a time series that has a unit root present.
 
@@ -128,6 +131,7 @@ HA (Alternative Hypothesis)
 ```
 
 A Dickey-Fuller test is run with **aTSA**.
+
 ```
 > library(aTSA)
 
@@ -267,7 +271,8 @@ Type 3: with drift and trend
 Note: in fact, p.value = 0.01 means p.value <= 0.01
 ```
 In this instance, we see that the p-value is above 0.05 (non-stationary) before first-differencing, while the first-differenced series shows a p-value below 0.05 (stationary). Thus, the presence of a stationary AR(1) series has been confirmed.
-Cochrane-Orcutt Remedy
+
+### Cochrane-Orcutt Remedy
 
 Given that the presence of a stationary AR(1) series has been established, the Cochrane-Orcutt method is appropriate to use in this case to remedy serial correlation.
 
@@ -318,7 +323,7 @@ data:  orcuttreg1
 DW = 2.0712, p-value = 0.7621
 alternative hypothesis: true autocorrelation is greater than 0
 ```
-Cointegration Testing: Two-Step Engle Granger Method
+## Cointegration Testing: Two-Step Engle Granger Method
 
 On the issue of cointegration, this is present when a linear combination of the non-stationary data transforms the same into a stationary series. This means that the time series show correlation that is statistically significant and not simply due to chance.
 However, note that simply using a test such as the adf.test to test the residuals of a linear regression is not appropriate on this case. The reason for this is that the critical values will differ for the adf test since residual based critical values are not the same as that for a standard ADF.
@@ -376,7 +381,7 @@ In this case, we see that the p-value is above 0.10 on the data, but stands at 0
 
 Taking this result into account, it is possible that cointegration is present to a certain degree in the model.
 
-Granger Causality and Cross-Correlation Testing
+## Granger Causality and Cross-Correlation Testing
 
 One must also consider the possibility that any “effects” of the oil price on movements of the S&P 500 may not be instantaneous, and a time lag for the same may be present.
 
@@ -571,6 +576,6 @@ Moreover, of the four regression models, here are the percentage of predictions 
     Regression 3: 9%
     Regression 4: 44%
 
-Conclusion
+## Conclusion
 
 To conclude, the original regression model (corrected for serial correlation and without any induced time lags) proved to be the most accurate at forecasting values of the S&P 500 using the oil price. While cross-correlation trends and cointegration were indicated to be present between the time series, there is not enough evidence to conclude that there is a lagged effect between oil price movements and that of the S&P 500.
