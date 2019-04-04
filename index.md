@@ -2,7 +2,7 @@
 [Time Series Consulting](https://mgcodesandstats.github.io/time-series-consulting-python-r/) |
 [Portfolio](https://mgcodesandstats.github.io/portfolio/) |
 [Terms and Conditions](https://mgcodesandstats.github.io/terms/) |
-[E-mail me](mailto:michael@michaeljgrogan.com) |
+[E-mail me](mailto:contact@michaeljgrogan.com) |
 [LinkedIn](https://www.linkedin.com/in/michaeljgrogan/)
 
 # Modelling time series relationships between the S&P 500 and oil prices
